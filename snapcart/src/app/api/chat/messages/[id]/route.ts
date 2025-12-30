@@ -3,11 +3,11 @@ import Message from "@/models/message.model";
 import ChatRoom from "@/models/chatRoom.model";
 import connectDb from "@/lib/db";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDb();
 
-    const { id } =await params; // FIXED (no await)
+    const { id } = await params;
 
     // Find ChatRoom using orderId
     const room = await ChatRoom.findOne({ orderId: id });

@@ -5,12 +5,12 @@ import DeliveryAssignment from "@/models/deliveryAssignment.model";
 
 export async function POST(
   req: Request,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     await connectDb();
 
-    const { orderId } =await params; // 🔥 Correct way to get orderId from dynamic route
+    const { orderId } = await params;
     const { otp } = await req.json();
 
     if (!orderId || !otp) {

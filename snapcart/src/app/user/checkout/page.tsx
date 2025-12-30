@@ -3,15 +3,9 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  useMap,
-} from "react-leaflet";
-import L, { LatLngExpression } from "leaflet";
+import dynamic from "next/dynamic";
+import type { LatLngExpression } from "leaflet";
 import { motion } from "framer-motion";
-import { OpenStreetMapProvider } from "leaflet-geosearch";
 import {
   MapPin,
   LocateFixed,
@@ -26,14 +20,21 @@ import {
   ArrowLeftCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import "leaflet/dist/leaflet.css";
 import axios from "axios";
 
-const markerIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-});
+// Dynamically import react-leaflet components to avoid SSR issues
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const DraggableMarker = dynamic(
+  () => import("@/components/DraggableMarker"),
+  { ssr: false }
+);
 
 interface Address {
   fullName: string;
@@ -108,39 +109,12 @@ export default function CheckoutPage() {
   // 🔍 Search Location
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
+    const { OpenStreetMapProvider } = await import("leaflet-geosearch");
     const provider = new OpenStreetMapProvider();
     const results = await provider.search({ query: searchQuery });
     if (results.length > 0) {
       setPosition([results[0].y, results[0].x]);
     }
-  };
-
-  // 📍 Draggable Marker Component (Type-Safe)
-  const DraggableMarker: React.FC = () => {
-    const map = useMap();
-
-    useEffect(() => {
-      if (position) {
-        map.setView(position as LatLngExpression, 15, { animate: true });
-      }
-    }, [position, map]);
-
-    if (!position) return null;
-
-    return (
-      <Marker
-        position={position}
-        draggable={true}
-        icon={markerIcon}
-        eventHandlers={{
-          dragend: (event: L.LeafletEvent) => {
-            const marker = event.target as L.Marker;
-            const { lat, lng } = marker.getLatLng();
-            setPosition([lat, lng]);
-          },
-        }}
-      />
-    );
   };
 
   // 🧭 Handle Current Location
@@ -332,7 +306,7 @@ export default function CheckoutPage() {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <DraggableMarker />
+                <DraggableMarker position={position} setPosition={setPosition} />
               </MapContainer>
             )}
 

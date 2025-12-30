@@ -4,12 +4,12 @@ import Order from "@/models/order.model";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     await connectDb();
 
-    const { orderId } =await params;
+    const { orderId } = await params;
 
     const order: any = await Order.findById(orderId)
       .populate("assignedDeliveryBoy", "name mobile location")

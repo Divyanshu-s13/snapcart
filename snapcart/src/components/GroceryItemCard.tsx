@@ -10,10 +10,9 @@ import {
   increaseQuantity,
   decreaseQuantity,
 } from "@/redux/cartSlice";
-import mongoose from "mongoose";
 
 interface GroceryItemCardProps {
-  _id: mongoose.Types.ObjectId
+  _id: string;
   name: string;
   price: number;
   image: string;
@@ -81,7 +80,7 @@ export default function GroceryItemCard({
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() =>
-              dispatch(addToCart({ _id, name, price, image, category, unit }))
+              dispatch(addToCart({ _id, name, price, image, category: category || "", unit: unit || "" }))
             }
             className="mt-4 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-full py-2 text-sm font-medium transition-all"
           >

@@ -3,11 +3,10 @@ import connectDb from "@/lib/db";
 import Order from "@/models/order.model";
 import { sendMail } from "@/lib/mailer";
 
-export async function POST(req: Request, { params }: { params: { orderId: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ orderId: string }> }) {
   try {
     await connectDb();
 
-    // 🔥 Correct way — params is a Promise
     const { orderId } = await params;
 
     if (!orderId) {

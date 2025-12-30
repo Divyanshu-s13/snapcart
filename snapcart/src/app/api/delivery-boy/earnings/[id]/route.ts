@@ -4,12 +4,12 @@ import Order from "@/models/order.model";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDb();
 
-    const { id } =await params;
+    const { id } = await params;
     if (!id)
       return NextResponse.json({
         success: false,

@@ -4,11 +4,11 @@ import Order from "@/models/order.model";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   await connectDb();
   
-  const { orderId } =await params;
+  const { orderId } = await params;
 
   try {
     const order = await Order.findById(orderId).populate("assignedDeliveryBoy");

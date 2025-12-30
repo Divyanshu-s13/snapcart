@@ -57,7 +57,7 @@ export async function POST(req: Request) {
 // 🟢 Optional: Get all orders for a specific user
 
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDb();
 

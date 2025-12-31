@@ -25,28 +25,37 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+    
     try {
       const result = await signIn("credentials", {
         email: form.email,
         password: form.password,
-        redirect: false, // Handle redirect manually for better control
+        redirect: false,
+        callbackUrl: "/",
       });
+
+      console.log("SignIn result:", result);
 
       if (result?.error) {
         console.error("Login error:", result.error);
-        alert("Login failed: " + result.error);
+        setError(result.error === "CredentialsSignin" ? "Invalid email or password" : result.error);
+      } else if (result?.ok) {
+        // Successful login - use window.location for hard redirect
+        // This works more reliably on Vercel than router.push
+        window.location.href = result.url || "/";
       } else {
-        // Successful login - redirect to home
-        router.push("/");
-        router.refresh();
+        setError("Login failed. Please try again.");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Login exception:", error);
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -69,6 +78,13 @@ function Login() {
         Welcome Back
       </motion.h1>
       <p className="text-gray-600 mb-8">Login to continue shopping 🍃</p>
+
+      {/* Error Message */}
+      {error && (
+        <div className="w-full max-w-sm mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl text-center">
+          {error}
+        </div>
+      )}
 
       {/* Login Form */}
       <motion.form

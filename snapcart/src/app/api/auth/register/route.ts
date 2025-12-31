@@ -28,16 +28,17 @@ export async function POST(request:NextRequest) {
 
        const hashedPassword= await bcrypt.hash(password,10)
        const user=await User.create({
-        name,email,password:hashedPassword})
+        name,email,password:hashedPassword, mobile: undefined})
 
            return NextResponse.json(
                 user,
                 {status:201}
             )
 
-    } catch (error) {
+    } catch (error: any) {
+            console.error("Register error:", error);
             return NextResponse.json(
-                {message:`register error ${error}`},
+                {message: error?.message || `register error ${error}`},
                 {status:500}
             )
     }

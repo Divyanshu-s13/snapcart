@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema<IUser>(
     mobile: {
       type: String,
       required: false,
+      sparse: true,
       unique: true,
       
     },

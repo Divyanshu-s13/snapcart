@@ -38,26 +38,34 @@ function Login() {
         email: form.email,
         password: form.password,
         redirect: false,
-        callbackUrl: "/",
       });
 
-      console.log("SignIn result:", result);
+      console.log("SignIn result:", JSON.stringify(result));
 
-      if (result?.error) {
+      if (!result) {
+        setError("No response from server. Please try again.");
+        return;
+      }
+
+      if (result.error) {
         console.error("Login error:", result.error);
         setError(result.error === "CredentialsSignin" ? "Invalid email or password" : result.error);
-      } else if (result?.ok) {
-        // Successful login - use window.location for hard redirect
-        // This works more reliably on Vercel than router.push
-        window.location.href = result.url || "/";
-      } else {
-        setError("Login failed. Please try again.");
+        return;
       }
+
+      if (result.ok) {
+        // Successful login - force hard redirect to home page
+        console.log("Login successful, redirecting to home...");
+        window.location.replace("/");
+        return;
+      }
+
+      setError("Login failed. Please try again.");
     } catch (error) {
       console.error("Login exception:", error);
       setError("An unexpected error occurred. Please try again.");
     } finally {
-      setLoading(false);
+      setLoading(false);false);
     }
   };
 

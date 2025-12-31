@@ -25,17 +25,26 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-const router=useRouter()
+  const router = useRouter();
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-       await signIn("credentials",{
-        email:form.email,
-        password:form.password,
-        redirectTo:"/"
-       })
-   
+      const result = await signIn("credentials", {
+        email: form.email,
+        password: form.password,
+        redirect: false, // Handle redirect manually for better control
+      });
+
+      if (result?.error) {
+        console.error("Login error:", result.error);
+        alert("Login failed: " + result.error);
+      } else {
+        // Successful login - redirect to home
+        router.push("/");
+        router.refresh();
+      }
     } catch (error) {
       console.error(error);
     } finally {

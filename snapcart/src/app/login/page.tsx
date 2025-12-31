@@ -65,7 +65,7 @@ function Login() {
       console.error("Login exception:", error);
       setError("An unexpected error occurred. Please try again.");
     } finally {
-      setLoading(false);false);
+      setLoading(false);
     }
   };
 

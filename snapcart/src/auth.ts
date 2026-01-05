@@ -99,6 +99,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.role = token.role as string;
       }
       return session;
+    },
+
+    // 4️⃣ Redirect callback - prevent redirect loops
+    async redirect({ url, baseUrl }) {
+      // If the url is already absolute and same origin, use it
+      if (url.startsWith(baseUrl)) return url;
+      // If it's a relative url, prepend baseUrl
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Default to home page
+      return baseUrl;
     }
   },
 

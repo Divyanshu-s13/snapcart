@@ -54,10 +54,9 @@ function Login() {
       }
 
       if (result.ok) {
-        // Successful login - use Next.js router for proper navigation
+        // Successful login - force a hard redirect to ensure session is established
         console.log("Login successful, redirecting to home...");
-        router.push("/");
-        router.refresh(); // Refresh to get the new session
+        window.location.href = "/";
         return;
       }
 

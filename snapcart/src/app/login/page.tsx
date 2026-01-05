@@ -14,9 +14,9 @@ import {
 import Image from "next/image";
 import googleImage from "@/assets/google.svg";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Google from "next-auth/providers/google";
 import { useRouter } from "next/navigation";
 
@@ -27,6 +27,17 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      console.log("✅ USER ALREADY LOGGED IN - Redirecting to home...");
+      console.log("Logged in user:", session.user);
+      router.push("/");
+      router.refresh();
+    }
+  }, [status, session, router]);
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +66,8 @@ function Login() {
 
       if (result.ok) {
         // Successful login - force a hard redirect to ensure session is established
-        console.log("Login successful, redirecting to home...");
+        console.log("🎉 LOGIN SUCCESSFUL!");
+        console.log("✅ User authenticated, redirecting to home page...");
         window.location.href = "/";
         return;
       }

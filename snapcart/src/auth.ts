@@ -120,7 +120,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/login",
   },
 
-  session: { strategy: "jwt" },
+  session: { 
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true
+      }
+    }
+  },
+  
   secret: process.env.AUTH_SECRET!,
   trustHost: true, // Required for Vercel deployment
 });

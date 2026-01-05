@@ -34,10 +34,10 @@ function Login() {
     if (status === "authenticated" && session) {
       console.log("✅ USER ALREADY LOGGED IN - Redirecting to home...");
       console.log("Logged in user:", session.user);
-      router.push("/");
-      router.refresh();
+      // Use hard redirect to force page reload with session
+      window.location.href = "/";
     }
-  }, [status, session, router]);
+  }, [status, session]);
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

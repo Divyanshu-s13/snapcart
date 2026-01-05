@@ -26,18 +26,29 @@ function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
 
   // Redirect if already logged in
   useEffect(() => {
-    if (status === "authenticated" && session) {
+    if (status === "authenticated" && session && !isRedirecting) {
       console.log("✅ USER ALREADY LOGGED IN - Redirecting to home...");
       console.log("Logged in user:", session.user);
-      // Use hard redirect to force page reload with session
-      window.location.href = "/";
+      setIsRedirecting(true);
+      // Use Next.js router instead of hard redirect
+      router.replace("/");
     }
-  }, [status, session]);
+  }, [status, session, router, isRedirecting]);
+
+  // Show loading while checking session or redirecting
+  if (status === "loading" || isRedirecting) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+      </div>
+    );
+  }
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

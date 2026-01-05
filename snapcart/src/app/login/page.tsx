@@ -39,6 +39,7 @@ function Login() {
         email: form.email,
         password: form.password,
         redirect: false,
+        callbackUrl: "/",
       });
 
       console.log("SignIn result:", JSON.stringify(result));
@@ -55,10 +56,10 @@ function Login() {
       }
 
       if (result.ok) {
-        // Successful login - force a hard redirect to ensure session is established
         console.log("🎉 LOGIN SUCCESSFUL!");
         console.log("✅ User authenticated, redirecting to home page...");
-        window.location.href = "/";
+        // Use client-side navigation to avoid hard reloads
+        router.replace(result.url ?? "/");
         return;
       }
 
@@ -169,9 +170,11 @@ function Login() {
         <button
           type="button"
           className="w-full flex items-center justify-center gap-3 border border-gray-300 hover:bg-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200"
-          onClick={()=>signIn("google", {
-            redirectTo: "http://localhost:3000/aoi/auth/callback/google"
-          })}
+          onClick={() =>
+            signIn("google", {
+              callbackUrl: "/",
+            })
+          }
         >
           <Image src={googleImage} alt="Google logo" className="w-5 h-5" />
           Continue with Google

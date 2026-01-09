@@ -53,11 +53,11 @@ function HeroSection() {
     const socket = getSocket();
 
     console.log("Emitting identity for:", session?.user?.id);
-
+if (socket)
     socket.emit("identity", {
       userId: session.user.id,
     });
-
+    if (socket)
     return () => {
       socket.off("order-status-updated");
     };

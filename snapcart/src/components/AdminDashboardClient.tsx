@@ -54,13 +54,15 @@ export default function AdminDashboardClient({
 
     console.log("Emitting identity for:", session?.user?.id);
 
-    socket.emit("identity", {
-      userId: session.user.id,
-    });
+    if (socket) {
+      socket.emit("identity", {
+        userId: session.user.id,
+      });
 
-    return () => {
-      socket.off("order-status-updated");
-    };
+      return () => {
+        socket.off("order-status-updated");
+      };
+    }
   }, [status]);
   
   return (

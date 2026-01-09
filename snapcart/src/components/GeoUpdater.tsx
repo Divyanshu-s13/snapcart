@@ -9,6 +9,7 @@ export default function GeoUpdater({ userId }: { userId: string }) {
   useEffect(() => {
     if (!userId) return;
 
+    if (socket)
     socket.emit("identity", { userId });
 
     if (!("geolocation" in navigator)) return;
@@ -17,7 +18,7 @@ export default function GeoUpdater({ userId }: { userId: string }) {
       (pos) => {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
-
+        if (socket)
         socket.emit("updateLocation", {
           userId,
           latitude: lat,

@@ -42,7 +42,8 @@ export default function DeliveryBoyDashboard() {
       { const lat = pos.coords.latitude; 
       const lon = pos.coords.longitude; 
       setDeliveryLocation({ latitude: lat, longitude: lon }); 
-      const socket = getSocket(); 
+      const socket = getSocket();
+      if (socket)
       socket.emit("updateLocation", { userId: user._id, latitude: lat, longitude: lon, }); 
     }, 
     (err) => console.log("GPS Error:", err), { enableHighAccuracy: true }); return () => navigator.geolocation.clearWatch(watchId); }, [user?._id]);

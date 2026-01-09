@@ -60,6 +60,7 @@ export default function DeliveryBoyChat({ orderId, deliveryBoyId }: Props) {
   /* ---------------- Join Room + Listen ---------------- */
   useEffect(() => {
     const socket = getSocket();
+    if (socket)
     socket.emit("join-room", orderId);
 
     const onChat = (msg: ChatMessage) => {
@@ -67,13 +68,14 @@ export default function DeliveryBoyChat({ orderId, deliveryBoyId }: Props) {
         setMessages((prev) => [...prev, msg]);
       }
     };
-
+      if (socket) {
     socket.on("chat-message", onChat);
-
+    
     return () => {
       socket.off("chat-message", onChat);
       socket.emit("leave-room", orderId);
     };
+  }
   }, [orderId]);
 
   /* ---------------- Scroll to Bottom ---------------- */
@@ -96,7 +98,7 @@ export default function DeliveryBoyChat({ orderId, deliveryBoyId }: Props) {
       roomId: orderId,
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
-
+    if (socket)
     socket.emit("chat-message", msg);
     setNewMessage("");
   };

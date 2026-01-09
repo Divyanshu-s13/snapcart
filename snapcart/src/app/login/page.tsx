@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import {
   Mail,
@@ -26,7 +25,7 @@ function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const router = useRouter();
+  const router = useRouter()
   const { data: session, status } = useSession();
   
   const handleLogin = async (e: React.FormEvent) => {
@@ -59,8 +58,8 @@ function Login() {
         console.log("🎉 LOGIN SUCCESSFUL!");
         console.log("✅ User authenticated, redirecting to home page...");
         // Use client-side navigation to avoid hard reloads
-        router.replace(result.url ?? "/");
-        return;
+        router.push("/")
+        console.log("🎉 LOGIN SUCCESSFUL!");
       }
 
       setError("Login failed. Please try again.");

@@ -58,11 +58,11 @@ function Login() {
         console.log("🎉 LOGIN SUCCESSFUL!");
         console.log("✅ User authenticated, redirecting to home page...");
         // Use client-side navigation to avoid hard reloads
-        router.push("/")
+        window.location.href = "/";
         console.log("🎉 LOGIN SUCCESSFUL!");
+      } else {
+        setError("Login failed. Please try again.");
       }
-
-      setError("Login failed. Please try again.");
     } catch (error) {
       console.error("Login exception:", error);
       setError("An unexpected error occurred. Please try again.");
